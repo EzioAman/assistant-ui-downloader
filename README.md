@@ -1,6 +1,6 @@
-# ⚡ assistant-ui-downloader
-
 <div align="center">
+
+# Assistant-UI-Downloader
 
 **Interactive CLI controller and batch downloader for the [assistant-ui](https://www.assistant-ui.com/) component registry.**  
 *Download the full registry, filtered categories, or fine-grained components into your project in one command.*
