@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Cache & Temporary files
+*.log
+.assistant-ui-cache.json
+.registry-cache.json
+scratch-test-dir/
+scratch-preserve-test/
+.DS_Store
+Thumbs.db

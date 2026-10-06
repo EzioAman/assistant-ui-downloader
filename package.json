@@ -1,0 +1,41 @@
+{
+  "name": "assistant-ui-downloader",
+  "version": "1.0.0",
+  "description": "Interactive CLI controller and batch downloader for assistant-ui registry components",
+  "type": "module",
+  "bin": {
+    "assistant-ui-downloader": "./bin/aui-controller.js",
+    "aui-downloader": "./bin/aui-controller.js",
+    "aui": "./bin/aui-controller.js"
+  },
+  "main": "./dist/cli.js",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "dev": "tsx src/cli.ts",
+    "start": "node bin/aui-controller.js",
+    "test": "tsx --test tests/security.test.ts tests/installer.test.ts"
+  },
+  "keywords": [
+    "assistant-ui",
+    "cli",
+    "shadcn",
+    "ai",
+    "components",
+    "registry"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^1.8.1",
+    "commander": "^15.0.0",
+    "cross-spawn": "^7.0.6",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/cross-spawn": "^6.0.6",
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.2"
+  }
+}
