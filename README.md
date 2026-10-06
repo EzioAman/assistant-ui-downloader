@@ -30,17 +30,17 @@ npx github:EzioAman/assistant-ui-downloader add thread elements-composer voice
 
 ## ✨ What You Get
 
-163 components from the official [assistant-ui registry](https://r.assistant-ui.com/registry.json), organized into 7 categories:
+163 items from the official [assistant-ui registry](https://r.assistant-ui.com/registry.json) (161 modular component packages generating 187+ `.tsx`/`.ts` files, plus 2 style specifications), organized into 7 categories:
 
-| Category | Count | Examples |
+| Category | Count | Examples (Official Registry Slugs) |
 |---|---|---|
-| **Core & Chat Threads** | 4 | `thread`, `thread-list`, `composer`, `utils` |
-| **Message Architecture** | 11 | `message-pair`, `message-branches`, `suggestions`, `quote` |
-| **Reasoning & Thinking** | 5 | `reasoning-panel`, `thinking-indicator`, `reasoning` |
-| **Streaming & State** | 5 | `streaming-text`, `loading-state`, `typing-indicator`, `error-state` |
-| **Code & Markdown** | 9 | `markdown-text`, `syntax-highlighter`, `shiki`, `mermaid`, `diff` |
-| **Tools, MCP & Voice** | 19 | `tool-fallback`, `mcp-config`, `voice`, `attachment`, `task-card` |
-| **UI Elements & Primitives** | 110 | `surfaces`, `computer-use`, `data-table`, `model-selector`, `logos` |
+| **Core & Chat Threads** | 4 | `thread`, `thread-list`, `utils`, `chat/b/ai-sdk-quick-start/json` |
+| **Message Architecture** | 11 | `elements-message-pair`, `elements-message-branches`, `elements-suggestions`, `quote` |
+| **Reasoning & Thinking** | 5 | `elements-thinking-indicator`, `elements-reasoning-panel`, `reasoning`, `elements-reasoning-effort` |
+| **Streaming & State** | 5 | `elements-streaming-text`, `elements-loading-state`, `elements-typing-indicator`, `heat-graph` |
+| **Code & Markdown** | 9 | `elements-code-diff`, `markdown-text`, `syntax-highlighter`, `shiki-highlighter`, `mermaid-diagram` |
+| **Tools, MCP & Voice** | 19 | `tool-fallback`, `mcp-config`, `voice`, `attachment`, `task-card`, `elements-tool-call` |
+| **UI Elements & Primitives** | 110 | `elements-surfaces`, `elements-computer-use`, `elements-data-table`, `model-selector`, `logos` |
 
 Every component is a `.tsx` / `.ts` file written directly into your project under `components/assistant-ui/` — fully yours to customize.
 
