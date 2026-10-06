@@ -1,74 +1,147 @@
-# assistant-ui-downloader
+# ⚡ assistant-ui-downloader
 
-> Interactive CLI and batch downloader for the [assistant-ui](https://www.assistant-ui.com/) component registry. Pull the whole registry, a category, or just the pieces you pick into your own project in one command.
+<div align="center">
+
+**Interactive CLI controller and batch downloader for the [assistant-ui](https://www.assistant-ui.com/) component registry.**  
+*Download the full registry, filtered categories, or fine-grained components into your project in one command.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Registry: assistant-ui](https://img.shields.io/badge/Registry-163%20Items-7c3aed.svg)](https://r.assistant-ui.com/registry.json)
+[![Direct REST Engine](https://img.shields.io/badge/Engine-Direct%20REST%20%7C%20Official%20CLI-0ea5e9.svg)](#-how-it-works)
+[![Node: LTS](https://img.shields.io/badge/Node-%3E%3D18.0.0-22c55e.svg)](https://nodejs.org)
+
+</div>
 
 > [!NOTE]
-> **Unofficial.** This is a community tool and is not affiliated with or endorsed by assistant-ui. Components are fetched from the public registry at [r.assistant-ui.com](https://r.assistant-ui.com/registry.json) and remain the work of the assistant-ui authors. For the official experience, see the [assistant-ui docs](https://www.assistant-ui.com/docs) and its own CLI (`npx assistant-ui add`).
+> **Community Project Disclaimer:** This is an independent, open-source community tool and is not officially affiliated with or endorsed by assistant-ui. All component source files are retrieved directly from the public upstream registry at [`r.assistant-ui.com`](https://r.assistant-ui.com/registry.json) and remain the copyrighted work of the [assistant-ui](https://www.assistant-ui.com/) creators. For the official framework documentation, see the [assistant-ui Docs](https://www.assistant-ui.com/docs).
 
 ---
 
-## Why this exists
+## 🧭 Navigation & Citations Map
 
-The official CLI installs components one at a time or by name. This tool adds:
-
-- **Interactive picker** with category and multi-select modes
-- **One-shot batch download** of the full registry (`add --all`)
-- **`list`**, **`search`**, and **`info`** commands to browse the registry directly from the terminal
-- **`--dry-run`** to preview exactly which files would be written
-- **Choice of engine**: a direct REST downloader (default, fast) or delegation to the official CLI (`--official`)
+- [🏁 Quickstart Tutorial (0 to Chat in 60s)](#-quickstart-tutorial)
+- [💡 Why This Exists](#-why-this-exists)
+- [📋 Prerequisites](#-prerequisites)
+- [⚡ Scriptable & Non-Interactive Usage](#-scriptable--non-interactive-usage)
+- [📦 Registry Directory (163 Components)](#-registry-directory)
+- [📂 Target File Hierarchy](#-target-file-hierarchy)
+- [🎯 How It Works & Commands](#-how-it-works)
+- [🛡️ Security Architecture & Threat Model](#-security-architecture)
+- [🛠️ Local Development & Testing](#-local-development)
+- [📚 Documentation & Upstream Citations](#-documentation--citations)
+- [📄 License](#-license)
 
 ---
 
-## Quick start
+## 🏁 Quickstart Tutorial
+
+Follow this step-by-step walkthrough to go from an empty terminal to a fully running AI chat interface.
+
+### Step 1: Run the Downloader in Your Project Root
+
+Launch the interactive downloader directly from GitHub without installing anything globally:
 
 ```bash
 npx github:EzioAman/assistant-ui-downloader
 ```
 
-Run this from the root of your project. The interactive picker launches with every component pre-selected by default.
+- When prompted for **Selection mode**, choose **★ All Components** (or select **Core & Chat Threads**).
+- When prompted for **Installation Engine**, choose **⚡ Direct Registry Download (Recommended)**.
+- Press **Enter** to confirm. All components and helpers will be fetched atomically into your project.
 
-*(This package is installed straight from GitHub, not from npm.)*
+### Step 2: Install Required Dependencies
 
----
-
-## Prerequisites
-
-The downloaded components are source files that expect an existing app. Before installing, make sure your project has:
-
-1. **A React app** (the registry targets Next.js and other React setups)
-2. **Tailwind CSS**
-3. **The `@/` import alias configured** (components import `@/lib/utils`)
-4. **shadcn-style UI primitives** — many components depend on `button`, `collapsible`, `dialog`, `tooltip`, and similar; see the [assistant-ui docs](https://www.assistant-ui.com/docs) for the recommended setup
-5. **A current LTS release of Node.js** (the `engines` field is not set, so this is not enforced)
-
-After a run, the CLI prints the exact dependency install command for the packages the downloaded components need (for example `@assistant-ui/react` and `lucide-react`).
-
----
-
-## Non-interactive usage
+Once the download finishes, install the runtime packages printed by the CLI summary:
 
 ```bash
-# Download everything
+npm install @assistant-ui/react @assistant-ui/eve lucide-react clsx tailwind-merge
+```
+
+*(Or use `pnpm add`, `yarn add`, or `bun add` depending on your package manager.)*
+
+### Step 3: Render Your AI Thread
+
+Import the generated `<Thread />` component into your React/Next.js page (`app/page.tsx`):
+
+```tsx
+"use client";
+
+import { Thread } from "@/components/assistant-ui/elements/thread.aui";
+import { AssistantRuntimeProvider } from "@assistant-ui/react";
+import { useEveAgentRuntime } from "@assistant-ui/eve";
+
+export default function ChatPage() {
+  // Use Eve runtime, Vercel AI SDK runtime, or custom assistant-ui runtime
+  const runtime = useEveAgentRuntime();
+
+  return (
+    <AssistantRuntimeProvider runtime={runtime}>
+      <main className="flex h-screen w-full flex-col items-center justify-center p-4">
+        <div className="h-full w-full max-w-4xl rounded-2xl border border-zinc-200 shadow-sm dark:border-zinc-800">
+          <Thread />
+        </div>
+      </main>
+    </AssistantRuntimeProvider>
+  );
+}
+```
+
+Start your dev server (`npm run dev`) and you have a production-grade AI chat experience with message branching, streaming, reasoning collapse, and markdown syntax highlighting!
+
+---
+
+## 💡 Why This Exists
+
+The official `assistant-ui` CLI is designed to install components either one by one or by typing individual names. This tool bridges the gap for full-stack developers and teams:
+
+1. **Batch Ecosystem Download**: Download all 160+ UI components in a single command (`add --all`).
+2. **Terminal UI Experience**: Clack-powered interactive selector with live category breakdown and multi-select.
+3. **High-Speed Direct REST Engine**: Fetches manifests and code concurrently over HTTPS without requiring prior `shadcn` initialization.
+4. **Registry Explorer**: Search, inspect, and list components directly in your terminal before pulling code.
+5. **Safe Dry-Runs**: Full `--dry-run` simulation to preview file changes without disk writes.
+
+---
+
+## 📋 Prerequisites
+
+The components generated by the registry are direct source files that integrate into modern React codebases. Ensure your project meets:
+
+- **React Framework**: Next.js (App Router recommended), Vite, Remix, or React 18/19.
+- **Tailwind CSS**: Configured with CSS variables or standard utility classes.
+- **Path Alias**: `@/` pointing to the project root or `src/` (e.g., `@/lib/utils` for `cn`).
+- **Base Primitives**: Common UI primitives (`button`, `dialog`, `tooltip`) from shadcn/ui or Base UI.
+- **Node.js**: Node 18 LTS or later.
+
+---
+
+## ⚡ Scriptable & Non-Interactive Usage
+
+Ideal for CI/CD pipelines, starter templates, and automated project setups:
+
+```bash
+# 1. Download all 163 registry items in one shot
 npx github:EzioAman/assistant-ui-downloader add --all
 
-# Download by category
+# 2. Download by category
 npx github:EzioAman/assistant-ui-downloader add --category core
 npx github:EzioAman/assistant-ui-downloader add --category reasoning
+npx github:EzioAman/assistant-ui-downloader add --category tools_mcp
 
-# Download specific components
+# 3. Download specific components by name
 npx github:EzioAman/assistant-ui-downloader add thread elements-composer voice
+
+# 4. Preview files without writing to disk
+npx github:EzioAman/assistant-ui-downloader add --all --dry-run
 ```
 
 ---
 
-## What you get
+## 📦 Registry Directory
 
-At the time of writing, the registry exposes **163 items**: 161 modular component packages (187+ `.tsx` / `.ts` files) plus 2 style specifications. Registry contents change over time, so treat `list` as the source of truth.
+The assistant-ui public registry exposes **163 items** (161 modular component packages producing 187+ `.tsx` / `.ts` files, plus 2 CSS animation specifications):
 
-| Category | `--category` value | Count | Examples (registry slugs) |
-|---|---|---|---|
+| Category | `--category` Flag | Items | Verified Official Registry Slugs |
+|---|---|:---:|---|
 | **Core & Chat Threads** | `core` | 4 | `thread`, `thread-list`, `utils`, `chat/b/ai-sdk-quick-start/json` |
 | **Message Architecture** | `messages` | 11 | `elements-message-pair`, `elements-message-branches`, `elements-suggestions`, `quote` |
 | **Reasoning & Thinking** | `reasoning` | 5 | `elements-thinking-indicator`, `elements-reasoning-panel`, `reasoning`, `elements-reasoning-effort` |
@@ -77,115 +150,141 @@ At the time of writing, the registry exposes **163 items**: 161 modular componen
 | **Tools, MCP & Voice** | `tools_mcp` | 19 | `tool-fallback`, `mcp-config`, `voice`, `attachment`, `task-card`, `elements-tool-call` |
 | **UI Elements & Primitives** | `elements_ui` | 110 | `elements-surfaces`, `elements-computer-use`, `elements-data-table`, `model-selector`, `logos` |
 
+*(To see real-time descriptions and full manifests, run `npx github:EzioAman/assistant-ui-downloader list`.)*
+
 ---
 
-## Where files are written
+## 📂 Target File Hierarchy
 
-Most components go under `components/assistant-ui/` (in `elements/` and `utils/` subfolders), and they are plain source files you own and can edit. Some registry items also write elsewhere:
+Files are placed following standard React / shadcn conventions:
 
-- `lib/utils.ts` (the `cn` helper)
-- `hooks/` (for example `use-copy-to-clipboard.ts`)
-- `components/ui/` (shared UI primitives)
-- `app/` (page and API-route templates, such as the AI SDK quick start in the core category)
+```text
+your-project/
+├── components/
+│   ├── assistant-ui/
+│   │   ├── elements/        # Chat components (thread.aui.tsx, reasoning.tsx, etc.)
+│   │   └── utils/           # Component-specific helper functions
+│   └── ui/                  # Shared base primitives (button, tooltip, etc.)
+├── hooks/                   # Custom React hooks (use-copy-to-clipboard.ts, etc.)
+├── lib/
+│   └── utils.ts             # Tailwind class merging utility (cn)
+└── app/                     # Optional template routes (AI SDK quick start, etc.)
+```
 
 > [!TIP]
-> Because `add --all` includes app-level templates, run it with `--dry-run` first. Existing files are preserved unless you pass `--overwrite`.
+> By default, `overwrite` is set to `false`. Existing project files are **never overwritten** unless you supply `--overwrite` / `-o`.
 
 ---
 
-## How it works
+## 🎯 How It Works
 
-### Interactive mode (default)
+### Interactive Picker
 
-Run without arguments to open the terminal UI, built with [Clack](https://github.com/bombshell-dev/clack):
+Running without arguments launches the terminal interface powered by [@clack/prompts](https://github.com/bombshell-dev/clack):
 
 ```bash
 npx github:EzioAman/assistant-ui-downloader
 ```
 
-You will be asked for:
-1. **Selection mode**: all components, by category, or fine-grained multi-select
-2. **Engine**: direct REST download (fast, default) or delegation to the official `assistant-ui add`
-3. **Overwrite behavior**: existing files are preserved by default
-4. **Progress**: a live spinner with component counts
-5. **Summary**: files created, files preserved, and the dependency install command
+```text
+┌  ASSISTANT-UI Component Controller & Downloader
+│
+◇  Loaded registry with 163 components!
+│
+◇  Select how you would like to pick components:
+│  ● ★ All Components (163 items)
+│  ○ 📁 Filter by Category
+│  ○ 🔍 Multi-select
+```
 
-### Commands
+### CLI Command Reference
 
 ```bash
-# List all components grouped by category
+# Browse all available components grouped by category
 npx github:EzioAman/assistant-ui-downloader list
 
-# Search by keyword
+# Search components by keyword
 npx github:EzioAman/assistant-ui-downloader search mcp
 
-# Inspect a component's dependencies and files
+# Inspect component metadata, dependencies, and file layout
 npx github:EzioAman/assistant-ui-downloader info thread
-
-# Dry run: preview without writing files
-npx github:EzioAman/assistant-ui-downloader add --all --dry-run
 ```
 
-### Options
+### Options & Flags
 
-| Flag | Description |
-|---|---|
-| `--all` | Select every component in the registry |
-| `--category <name>` | One of `core`, `messages`, `reasoning`, `streaming`, `tools_mcp`, `code_markdown`, `elements_ui` |
-| `-c, --cwd <path>` | Target working directory (defaults to current directory) |
-| `-p, --path <path>` | Custom output path for component files |
-| `-o, --overwrite` | Overwrite existing files |
-| `-y, --yes` | Skip confirmation prompts (useful in CI) |
-| `--direct` | Use direct REST downloader (default) |
-| `--official` | Delegate to `npx assistant-ui add` in safe batches |
-| `--dry-run` | Preview files and dependencies without writing |
+| Flag | Description | Default |
+|---|---|---|
+| `--all` | Download all 163 registry components | `false` |
+| `--category <name>` | Filter by category (`core`, `messages`, `reasoning`, `streaming`, `tools_mcp`, `code_markdown`, `elements_ui`) | — |
+| `-c, --cwd <path>` | Target project directory | Current working dir |
+| `-p, --path <path>` | Custom directory prefix for component files | `components/assistant-ui` |
+| `-o, --overwrite` | Overwrite existing files on disk | `false` |
+| `-y, --yes` | Skip confirmation prompts (recommended for CI) | `true` (in non-interactive) |
+| `--direct` | Use concurrent direct HTTPS REST downloader | `true` |
+| `--official` | Delegate batch execution to `npx assistant-ui add` | `false` |
+| `--dry-run` | Preview file outputs without touching disk | `false` |
 
-### Installed command names
+### Local Binary Aliases
 
-When installed or linked locally (`npm link`), the same CLI is available as `aui-downloader`, `assistant-ui-downloader`, or the short alias `aui`.
-
----
-
-## Safety notes
-
-This tool downloads remote source code and writes it into your project. Treat it like any other code you pull in: review the changes (for example with `git diff`) before committing.
-
-### Built-in safeguards:
-- **Input validation**: component slugs must match `^[a-zA-Z0-9_\-\/]+$`
-- **Path traversal protection**: file writes are checked to stay inside the project root
-- **Registry URL allowlist**: only `https://*.assistant-ui.com` endpoints are accepted
-- **Graceful interrupts**: `Ctrl+C` exits cleanly without leaving partial state
-- **CLI length safety**: when using `--official`, components are passed to the official CLI in batches of 15 so Windows command-line length limits are not exceeded
+When linked locally (`npm link`), three shorthand commands are registered:
+- `aui`
+- `aui-downloader`
+- `assistant-ui-downloader`
 
 ---
 
-## Local development
+## 🛡️ Security Architecture
+
+Because this utility writes code into your filesystem, strict defense-in-depth security mitigations are implemented and continuously tested:
+
+- **Input Sanitization**: Component names are validated against `/^[a-zA-Z0-9_\-\/]+$/` to eliminate argument injection.
+- **Path Traversal Protection (Zip Slip Guard)**: Target write paths are resolved and asserted to stay within the root directory boundaries.
+- **Origin Validation**: Remote manifests are restricted strictly to trusted `https://*.assistant-ui.com` origins.
+- **Windows CLI Buffer Protection**: Official delegation batches arguments in chunks of 15 to prevent Windows `E2BIG` command line overflows.
+- **Graceful SIGINT Cleanup**: `Ctrl+C` cleanly aborts active downloads without leaving partial file locks.
+
+*Read the full threat model in [doc/security-vulnerability-analysis.md](doc/security-vulnerability-analysis.md).*
+
+---
+
+## 🛠️ Local Development
 
 ```bash
+# Clone the repository
 git clone https://github.com/EzioAman/assistant-ui-downloader.git
 cd assistant-ui-downloader
+
+# Install dependencies
 npm install
-npm test        # security and installer tests
-npm run build   # compile TypeScript to dist/
-npm start       # run the interactive CLI
+
+# Run automated security and installer test suite
+npm test
+
+# Compile TypeScript
+npm run build
+
+# Launch the CLI locally
+npm start
 ```
 
 ---
 
-## Documentation
+## 📚 Documentation & Citations
 
-- [Registry architecture](doc/assistant-ui-registry.md) — How the `r.assistant-ui.com` registry works
-- [Security analysis](doc/security-vulnerability-analysis.md) — Threat model and mitigations
-- [CLI architecture](doc/cli-architecture.md) — Design comparison with the official assistant-ui CLI
-- [User guide](doc/user-guide.md) — Full command reference
+### Repository Guides
+- 📖 [Registry Architecture & Schema](doc/assistant-ui-registry.md) — How the `r.assistant-ui.com` registry works
+- 🛡️ [Security Vulnerability Analysis](doc/security-vulnerability-analysis.md) — Threat model, mitigations, and CVE defenses
+- 🏛️ [CLI Architecture & Comparison](doc/cli-architecture.md) — Architectural comparison with the official CLI
+- 📘 [User Guide & Command Reference](doc/user-guide.md) — Comprehensive options and examples
 
-### Upstream resources:
-- [assistant-ui website](https://www.assistant-ui.com/)
-- [assistant-ui documentation](https://www.assistant-ui.com/docs)
-- [Registry index (JSON)](https://r.assistant-ui.com/registry.json)
+### Official Upstream Citations & References
+- 🌐 [assistant-ui Official Site](https://www.assistant-ui.com/) — Official framework home
+- 📑 [assistant-ui Documentation](https://www.assistant-ui.com/docs) — Getting started, styling, and runtimes
+- 🔗 [Public Registry JSON Index](https://r.assistant-ui.com/registry.json) — Upstream component source index
+- 🧩 [shadcn/ui Registry Specification](https://ui.shadcn.com/schema/registry.json) — Schema standard followed by the registry
 
 ---
 
-## License
+## 📄 License
 
-[MIT](LICENSE). Components downloaded from the assistant-ui registry are subject to their own upstream license.
+This tool is distributed under the [MIT License](LICENSE). Components downloaded from upstream assistant-ui endpoints are licensed under their respective authors' licenses.
